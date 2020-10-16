@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>画板</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="canvas" width="100" height="100"></canvas>
+    <script>
+        //获取canvas
+        let canvas = document.getElementById("canvas");
+        // 获取浏览器窗口文档显示区域的宽度和高度，不包括滚动条
+        canvas.width = document.documentElement.clientWidth;
+        canvas.height = document.documentElement.clientHeight;
+        // 指定了二维绘图
+        let ctx = canvas.getContext("2d");
+        
+
+        // 设置或返回用于填充绘画的颜色
+        ctx.fillStyle = "black";
+        // strokeStyle 属性设置或返回用于笔触的颜色
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 10;
+        // 向线条的每个末端添加圆形线帽
+        ctx.lineCap = "round";
+
+        // drawLine(0,0,300,300)
+        // 定义一个变量初始化画笔状态
+        let painting = false;
+        let last
+
+        // （起始横坐标，起始纵坐标，宽度，高度）
+        function drawLine(x1, y1, x2, y2){
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+        
+        canvas.onmousedown = (e) => {
+            painting = true
+            last = [e.clientX, e.clientY]
+        }
+        //移动设备
+        var isTouchDevice = 'ontouchstart' in document.documentElement;
+        if(isTouchDevice){
+            canvas.ontouchstart = (e) => {
+                let x = e.touches[0].clientX
+                let y = e.touches[0].clientY
+                last = [x, y]
+            }
+            canvas.ontouchmove = (e) => {
+                let x = e.touches[0].clientX
+                let y = e.touches[0].clientY
+                drawLine(last[0], last[1], x, y)
+                last = [x, y]
+            }
+        }else{
+            
+            canvas.onmousemove = (e) => {
+                if(painting === true){
+                    console.log(last)
+                    drawLine(last[0], last[1], e.clientX, e.clientY) 
+                    last = [e.clientX, e.clientY]
+            }
+        }
+            canvas.onmouseup = () => {
+                painting = false
+           }
+        }
+
+       
+
+        
+
+        
+    </script>
+</body>
+</html>
